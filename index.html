@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hello Scroll + Portfolio</title>
+
+  <!-- Fonts & Libraries -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.153.0/build/three.min.js"></script>
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+    }
+
+    /* Topbar */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      padding: 1.25rem 2rem;
+      display: flex;
+      justify-content: center;
+      background: transparent;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      font-size: 0.9rem;
+      color: white;
+      transition: color 0.5s ease;
+    }
+
+    nav {
+      display: flex;
+      gap: 2.5rem;
+    }
+
+    .nav-item {
+      position: relative;
+      color: inherit;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .nav-item::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -3px;
+      height: 2px;
+      width: 100%;
+      background-color: #ff50b8;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+
+    .nav-item:hover::after {
+      transform: scaleX(1);
+    }
+
+    header.text-black {
+      color: black;
+    }
+
+    .section {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #helloWorld {
+      background: black;
+      position: relative;
+    }
+
+    #particleCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    #helloText {
+      font-size: 4rem;
+      font-weight: 900;
+      color: white;
+      transform-origin: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .selva-section {
+      background: white;
+      color: black;
+      position: relative;
+      overflow: hidden;
+      height:1000px;
+      align-items: center;
+    }
+
+    #threeCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      margin-top: 10%;
+    }
+
+    .content {
+      position: relative;
+      z-index: 2;
+      padding: 2rem;
+    }
+
+    .content__title {
+      font-size: 2.5rem;
+      font-weight: 800;
+    }
+
+    .selva-gradient {
+      background: linear-gradient(270deg, #ffb04f, #ff8961, #ff50b8, #cb5eee, #ffb04f);
+      background-size: 200% 200%;
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+      animation: gradientMove 4s linear infinite;
+      transition: background-position 0.5s;
+      display: inline-block;
+    }
+
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 100% 50%; }
+    }
+
+    .content__subtitle {
+      font-size: 1.2rem;
+      margin-top: 1rem;
+    }
+
+    .timeline-section {
+      background: #f5f5f5;
+      padding: 100px 10%;
+      color: #111;
+    }
+
+    .timeline-item {
+      border-left: 2px solid #888;
+      padding-left: 20px;
+      margin-bottom: 40px;
+      position: relative;
+    }
+
+    .timeline-item::before {
+      content: '';
+      width: 12px;
+      height: 12px;
+      background: #ff50b8;
+      border-radius: 50%;
+      position: absolute;
+      left: -7px;
+      top: 5px;
+    }
+
+    .timeline-item h3 {
+      font-size: 1.2rem;
+      margin-bottom: 5px;
+    }
+
+    .timeline-item span {
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    .timeline-item p {
+      margin-top: 10px;
+    }
+
+    .scroll-indicator {
+      width: 100vw;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: absolute;
+      bottom: 32px;
+      left: 0;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    .scroll-indicator svg {
+      margin-top: 4px;
+    }
+
+    .scroll-indicator .scroll-text {
+      color: #888;
+      font-size: 1rem;
+      margin-top: 8px;
+      font-family: 'Poppins', sans-serif;
+      letter-spacing: 1px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 🔝 Top Navigation Bar -->
+  <header id="topbar">
+    <nav>
+      <a href="#selvaSection" class="nav-item" id="aboutLink">ABOUT</a>
+      <a href="#teaser" class="nav-item flex items-center gap-1">
+        TEASER
+        <svg width="20" height="12" viewBox="0 0 20 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M1 6C3 1 7 1 10 6C13 11 17 11 19 6" stroke="currentColor" stroke-width="1.5"/>
+          <circle cx="10" cy="6" r="1.5" fill="currentColor"/>
+        </svg>
+      </a>
+      <a href="#demo" class="nav-item">PLAY DEMO</a>
+      <a href="#news" class="nav-item">NEWS</a>
+    </nav>
+  </header>
+
+  <!-- Section 1: Hello World -->
+  <section class="section" id="helloWorld" style="position:relative;">
+    <h1 id="helloText"></h1>
+    <canvas id="particleCanvas"></canvas>
+    <div class="scroll-indicator">
+      <svg width="32" height="48" viewBox="0 0 32 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="4" y="4" width="24" height="40" rx="12" stroke="#888" stroke-width="2" fill="none"/>
+        <circle cx="16" cy="14" r="3" fill="#888">
+          <animate attributeName="cy" values="14;20;14" dur="1.5s" repeatCount="indefinite"/>
+        </circle>
+      </svg>
+      <div class="scroll-text">Scroll down</div>
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+        <path d="M8 12l8 8 8-8" stroke="#888" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- Section 2: Selva + 3D Canvas -->
+  <section class="section selva-section" id="selvaSection" style="display:flex;flex-direction:row;justify-content:space-between;align-items:center;">
+    <div id="selvaLeft" style="margin-left: 35%;">
+      <h2 class="content__title" style="margin-left:2rem;">
+        Hi, I'm <span class="selva-gradient">Selva</span>
+      </h2>
+    </div>
+    <canvas id="threeCanvas"></canvas>
+    <div class="content" id="selvaRight" style="margin-right: 35%;">
+      <p class="content__subtitle"><span id="selvaType"></span><br />I'm playing with ThreeJS for the very first time.</p>
+    </div>
+  </section>
+
+  <!-- Section 3: Timeline -->
+  <section class="timeline-section">
+    <h2 class="text-3xl font-bold mb-8">📜 Portfolio Timeline</h2>
+    <div class="timeline-item">
+      <h3>🚀 Launched Personal Website</h3>
+      <span>2023</span>
+      <p>Built my first portfolio website using React and TailwindCSS to showcase my frontend skills.</p>
+    </div>
+    <div class="timeline-item">
+      <h3>🎮 Built Interactive Game</h3>
+      <span>2024</span>
+      <p>Developed a physics-based browser game using Three.js and WebGL for learning simulations.</p>
+    </div>
+    <div class="timeline-item">
+      <h3>📦 Released UI Kit</h3>
+      <span>2025</span>
+      <p>Released an open-source component library for modern UI design with animated elements.</p>
+    </div>
+  </section>
+
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Particle System Setup
+    const particleCanvas = document.getElementById("particleCanvas");
+    const particleScene = new THREE.Scene();
+    const particleCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const particleRenderer = new THREE.WebGLRenderer({ canvas: particleCanvas, alpha: true });
+    particleRenderer.setSize(window.innerWidth, window.innerHeight);
+    particleRenderer.setPixelRatio(window.devicePixelRatio);
+
+    // Create particles
+    const particlesGeometry = new THREE.BufferGeometry();
+    const particlesCount = 2000;
+    const posArray = new Float32Array(particlesCount * 3);
+
+    for(let i = 0; i < particlesCount * 3; i++) {
+        posArray[i] = (Math.random() - 0.5) * 5;
+    }
+
+    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+
+    const particlesMaterial = new THREE.PointsMaterial({
+        size: 0.005,
+        color: '#ffffff',
+        transparent: true,
+        opacity: 0.8
+    });
+
+    const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+    particleScene.add(particlesMesh);
+    particleCamera.position.z = 2;
+
+    // Particle animation
+    const animateParticles = () => {
+        requestAnimationFrame(animateParticles);
+        particlesMesh.rotation.x += 0.0005;
+        particlesMesh.rotation.y += 0.0005;
+        particleRenderer.render(particleScene, particleCamera);
+    };
+
+    animateParticles();
+
+    // Handle window resize for particle system
+    window.addEventListener("resize", () => {
+        particleCamera.aspect = window.innerWidth / window.innerHeight;
+        particleCamera.updateProjectionMatrix();
+        particleRenderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    const text = "Hello World";
+    const helloTextElem = document.getElementById("helloText");
+    const fonts = [
+      "'Poppins', sans-serif",
+      "'Courier New', Courier, monospace",
+      "'Times New Roman', Times, serif",
+      "'Fira Mono', monospace",
+      "'Comic Sans MS', cursive, sans-serif",
+      "'Brush Script MT', cursive"
+    ];
+    const fontStyles = [
+      { style: "normal", weight: "900" },
+      { style: "italic", weight: "700" },
+      { style: "italic", weight: "700" },
+      { style: "normal", weight: "700" },
+      { style: "normal", weight: "700" },
+      { style: "italic", weight: "700" }
+    ];
+    let fontIndex = 0;
+
+    function typeAndDeleteLoop() {
+      helloTextElem.style.fontFamily = fonts[fontIndex % fonts.length];
+      helloTextElem.style.fontStyle = fontStyles[fontIndex % fonts.length].style;
+      helloTextElem.style.fontWeight = fontStyles[fontIndex % fonts.length].weight;
+      let i = 0;
+      function type() {
+        if (i <= text.length) {
+          helloTextElem.textContent = text.slice(0, i);
+          i++;
+          setTimeout(type, 80);
+        } else {
+          setTimeout(erase, 700);
+        }
+      }
+      function erase() {
+        if (i >= 0) {
+          helloTextElem.textContent = text.slice(0, i);
+          i--;
+          setTimeout(erase, 40);
+        } else {
+          fontIndex++;
+          setTimeout(typeAndDeleteLoop, 400);
+        }
+      }
+      type();
+    }
+
+    gsap.to({}, {
+      scrollTrigger: {
+        trigger: "#helloWorld",
+        start: "top 80%",
+        once: true
+      },
+      onStart: typeAndDeleteLoop
+    });
+
+    gsap.to("#helloText", {
+      scrollTrigger: {
+        trigger: "#helloWorld",
+        start: "top top",
+        end: "bottom top",
+        scrub: true
+      },
+      scale: 5,
+      color: "black",
+      ease: "none"
+    });
+
+    gsap.to("#helloWorld", {
+      scrollTrigger: {
+        trigger: "#helloWorld",
+        start: "top top",
+        end: "bottom top",
+        scrub: true
+      },
+      backgroundColor: "#ffffff",
+      ease: "none"
+    });
+
+    ScrollTrigger.create({
+      trigger: "#selvaSection",
+      start: "top center",
+      end: "bottom center",
+      onEnter: () => document.getElementById("topbar").classList.add("text-black"),
+      onLeaveBack: () => document.getElementById("topbar").classList.remove("text-black")
+    });
+
+    const canvas = document.getElementById("threeCanvas");
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.position.z = 3;
+    scene.add(camera);
+
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+
+    const geometry = new THREE.TorusKnotGeometry(0.5, 0.2, 200, 30);
+    const textureLoader = new THREE.TextureLoader();
+    const matcap = textureLoader.load("https://bruno-simon.com/prismic/matcaps/3.png");
+    const material = new THREE.MeshMatcapMaterial({ matcap });
+    const mesh = new THREE.Mesh(geometry, material);
+    scene.add(mesh);
+
+    window.addEventListener("resize", () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    const animate = () => {
+      requestAnimationFrame(animate);
+      mesh.rotation.x += 0.01;
+      mesh.rotation.y += 0.01;
+
+      const selvaTop = document.getElementById("selvaSection").getBoundingClientRect().top;
+      const windowHeight = window.innerHeight;
+      if (selvaTop < windowHeight && selvaTop > -windowHeight) {
+        renderer.render(scene, camera);
+      }
+    };
+
+    animate();
+
+    gsap.fromTo("#selvaLeft", { x: 0 }, {
+      x: "-200px", y: "-120px",
+      scrollTrigger: {
+        trigger: "#selvaSection",
+        start: "top top",
+        end: "bottom 80%",
+        scrub: true
+      }
+    });
+
+    gsap.fromTo("#selvaRight", { x: 0 }, {
+      x: "400px",
+      scrollTrigger: {
+        trigger: "#selvaSection",
+        start: "top 80%",
+        end: "bottom 80%",
+        scrub: true
+      }
+    });
+
+    // --- Selva Section Typewriter Effect ---
+    const selvaLines = [
+      "I'm a Front End Developer",
+      "I'm Q/A tester",
+      "I'm Cyber Security enthusiast"
+    ];
+    const selvaTypeElem = document.getElementById("selvaType");
+    let selvaLineIndex = 0;
+
+    function selvaTypeAndDeleteLoop() {
+      const line = selvaLines[selvaLineIndex % selvaLines.length];
+      let i = 0;
+      function type() {
+        if (i <= line.length) {
+          selvaTypeElem.textContent = line.slice(0, i);
+          i++;
+          setTimeout(type, 70);
+        } else {
+          setTimeout(erase, 700);
+        }
+      }
+      function erase() {
+        if (i >= 0) {
+          selvaTypeElem.textContent = line.slice(0, i);
+          i--;
+          setTimeout(erase, 35);
+        } else {
+          selvaLineIndex++;
+          setTimeout(selvaTypeAndDeleteLoop, 400);
+        }
+      }
+      type();
+    }
+    // Start the effect when selvaSection is in view
+    gsap.to({}, {
+      scrollTrigger: {
+        trigger: "#selvaSection",
+        start: "top 80%",
+        once: true
+      },
+      onStart: selvaTypeAndDeleteLoop
+    });
+
+    document.getElementById('aboutLink').addEventListener('click', function(e) {
+      e.preventDefault();
+      const section = document.getElementById('selvaSection');
+      const y = section.getBoundingClientRect().top + window.pageYOffset - -150; // 150px offset
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    });
+  </script>
+</body>
+</html>
