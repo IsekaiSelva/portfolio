@@ -7,18 +7,24 @@
 
   <!-- Fonts & Libraries -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/ScrollTrigger.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.153.0/build/three.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Doto:wght@100..900&display=swap" rel="stylesheet">
 
   <style>
     html, body {
       margin: 0;
       padding: 0;
-      font-family: 'Poppins', sans-serif;
+      font-family: 'Doto', 'Poppins', sans-serif;
       scroll-behavior: smooth;
       overflow-x: hidden;
+      background: #EA5600;
     }
 
     /* Topbar */
@@ -34,7 +40,7 @@
       background: transparent;
       font-weight: 600;
       letter-spacing: 0.1em;
-      font-size: 0.9rem;
+      font-size: 1.2rem;
       color: white;
       transition: color 0.5s ease;
     }
@@ -72,6 +78,10 @@
       color: black;
     }
 
+    header.text-black .nav-item::after {
+      background-color: black;
+    }
+
     .section {
       height: 100vh;
       display: flex;
@@ -80,8 +90,12 @@
     }
 
     #helloWorld {
-      background: black;
+      background: #EA5600;
       position: relative;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
     #particleCanvas {
@@ -95,20 +109,35 @@
     }
 
     #helloText {
-      font-size: 4rem;
+      font-size: 10vw;
       font-weight: 900;
-      color: white;
-      transform-origin: center;
-      position: relative;
+      letter-spacing: 0.101em;
+      color: #EA5600;
+      font-family: 'Poppins', sans-serif;
+      text-transform: uppercase;
       z-index: 2;
+      position: relative;
+      text-align: center;
+      width: 100%;
+    }
+
+    #clock {
+      font-size: 1.5vw;
+      color: #EA5600;
+      font-family: 'Poppins', sans-serif;
+      z-index: 2;
+      position: relative;
+      text-align: center;
+      width: 100%;
+      margin-top: 1rem;
     }
 
     .selva-section {
-      background: white;
+      background: #EA5600; /* Initially orange */
       color: black;
       position: relative;
       overflow: hidden;
-      height:1000px;
+      height: 100vh;
       align-items: center;
     }
 
@@ -120,7 +149,7 @@
       height: 100%;
       z-index: 0;
       pointer-events: none;
-      margin-top: 10%;
+      margin-top: 0%; /* Adjusted to move higher */
     }
 
     .content {
@@ -130,7 +159,7 @@
     }
 
     .content__title {
-      font-size: 2.5rem;
+      font-size: 3.5rem;
       font-weight: 800;
     }
 
@@ -152,7 +181,7 @@
     }
 
     .content__subtitle {
-      font-size: 1.2rem;
+      font-size: 1.8rem;
       margin-top: 1rem;
     }
 
@@ -200,7 +229,7 @@
       flex-direction: column;
       align-items: center;
       position: absolute;
-      bottom: 32px;
+      bottom: 8px;
       left: 0;
       z-index: 10;
       pointer-events: none;
@@ -217,6 +246,221 @@
       font-family: 'Poppins', sans-serif;
       letter-spacing: 1px;
     }
+
+    .hello-canvas-container {
+      width: 100%;
+      height: 100vh; /* Set height to 100vh */
+      max-width: none;
+      position: relative;
+      overflow: hidden;
+      border-radius: 16px;
+      background: #111;
+      display: flex;
+      flex-direction: column; /* Stack children vertically */
+      align-items: center; /* Center children horizontally */
+      justify-content: center; /* Center children vertically */
+      padding: 0;
+    }
+
+    #particleCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+      display: block;
+    }
+
+    /* Scroll Progress Indicator */
+    #scrollProgressIndicator {
+      position: fixed;
+      top: 50%;
+      right: 20px;
+      bottom: auto;
+      left: auto;
+      transform: translateY(-50%);
+      z-index: 1001;
+      width: 40px;
+      height: 200px;
+      background-color: rgba(255, 255, 255, 0.8);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-direction: column;
+      padding: 15px 0;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #scrollProgressIndicator .indicator-dots {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    #scrollProgressIndicator .indicator-dot {
+      width: 8px;
+      height: 8px;
+      background-color: #888;
+      border-radius: 50%;
+      transition: width 0.3s ease, background-color 0.3s ease;
+      cursor: pointer;
+      transform-origin: 50% 50%;
+    }
+
+    #scrollProgressIndicator .indicator-dot.active {
+      width: 20px; /* Elongated shape */
+      border-radius: 4px; /* Pill shape */
+      background-color: #EA5600; /* Orange accent color for active */
+    }
+
+    #scrollProgressIndicator .indicator-progress {
+      position: absolute;
+      bottom: 15px; /* Start from the bottom */
+      left: 50%; /* Center horizontally */
+      transform: translateX(-50%);
+      width: 8px;
+      height: 0%; /* Will be animated - starts at 0 height */
+      background-color: #333;
+      border-radius: 4px;
+      z-index: 1;
+      display: none; /* Hide the vertical progress bar */
+    }
+
+    #scrollProgressIndicator .indicator-bg {
+      /* This div might not be needed if styling the container */
+      display: none;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+      header {
+        padding: 1rem;
+        font-size: 0.8rem;
+      }
+
+      nav {
+        gap: 1rem;
+      }
+
+      #helloWorld {
+        padding: 1rem;
+      }
+
+      #helloCanvasContainer {
+        width: 100% !important;
+        height: 100vh !important;
+        padding: 1rem !important;
+      }
+
+      #helloText {
+        font-size: 15vw !important;
+        margin-bottom: 1rem !important;
+      }
+
+      #randomCode {
+        font-size: 1.5em !important;
+        width: 90% !important;
+        height: 15vh !important;
+      }
+
+      #clock {
+        font-size: 1rem !important;
+      }
+
+      .selva-section {
+        flex-direction: column !important;
+        padding: 2rem 1rem !important;
+        height: auto !important;
+      }
+
+      #selvaCard {
+        width: 95% !important;
+        margin: 1rem auto !important;
+        height: auto !important;
+        flex-direction: column !important;
+        padding: 1.5rem !important;
+      }
+
+      #selvaLeft,
+      #selvaRight {
+        margin: 0 !important;
+        width: 100% !important;
+        text-align: center !important;
+      }
+
+      .content__title {
+        font-size: 2.5rem !important;
+        margin-left: 0 !important;
+      }
+
+      .content__subtitle {
+        font-size: 1.2rem !important;
+      }
+
+      #threeCanvas {
+        position: relative !important;
+        margin: 2rem auto !important;
+        width: 100% !important;
+        height: 300px !important;
+      }
+
+      .timeline-section {
+        padding: 2rem 1rem;
+      }
+
+      .timeline-item {
+        margin-bottom: 30px;
+      }
+
+      /* Hide vertical scroll indicator on small screens */
+      #scrollProgressIndicator {
+        display: none !important;
+      }
+
+      /* Adjust scroll indicator for mobile */
+      .scroll-indicator {
+        bottom: 20px !important;
+      }
+
+      .scroll-indicator svg {
+        width: 24px !important;
+        height: 36px !important;
+      }
+
+      .scroll-text {
+        font-size: 0.8rem !important;
+      }
+    }
+
+    /* Additional adjustments for very small screens */
+    @media (max-width: 480px) {
+      header {
+        font-size: 0.7rem;
+      }
+
+      nav {
+        gap: 0.8rem;
+      }
+
+      #helloText {
+        font-size: 18vw !important;
+      }
+
+      .content__title {
+        font-size: 2rem !important;
+      }
+
+      .content__subtitle {
+        font-size: 1rem !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -225,51 +469,86 @@
   <header id="topbar">
     <nav>
       <a href="#selvaSection" class="nav-item" id="aboutLink">ABOUT</a>
-      <a href="#teaser" class="nav-item flex items-center gap-1">
-        TEASER
+      <a href="#timelineSection" class="nav-item flex items-center gap-1">
+        PORTFOLIO
         <svg width="20" height="12" viewBox="0 0 20 12" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M1 6C3 1 7 1 10 6C13 11 17 11 19 6" stroke="currentColor" stroke-width="1.5"/>
           <circle cx="10" cy="6" r="1.5" fill="currentColor"/>
         </svg>
       </a>
-      <a href="#demo" class="nav-item">PLAY DEMO</a>
+      <a href="#demo" class="nav-item">FACTS
+      
+      </a>
       <a href="#news" class="nav-item">NEWS</a>
     </nav>
   </header>
 
   <!-- Section 1: Hello World -->
-  <section class="section" id="helloWorld" style="position:relative;">
-    <h1 id="helloText"></h1>
-    <canvas id="particleCanvas"></canvas>
-    <div class="scroll-indicator">
-      <svg width="32" height="48" viewBox="0 0 32 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="4" y="4" width="24" height="40" rx="12" stroke="#888" stroke-width="2" fill="none"/>
-        <circle cx="16" cy="14" r="3" fill="#888">
-          <animate attributeName="cy" values="14;20;14" dur="1.5s" repeatCount="indefinite"/>
-        </circle>
-      </svg>
-      <div class="scroll-text">Scroll down</div>
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-        <path d="M8 12l8 8 8-8" stroke="#888" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
+  <!-- <section class="section" id="helloWorld" style="background:#EA5600;display:flex;justify-content:center;align-items:center;min-height:100vh;">
+    <div id="helloFrame" style="border-radius:20px;padding:2.5rem;width:90vw;max-width:1200px;box-sizing:border-box;display:flex;align-items:center;flex-direction:column;">
+      <div id="helloCanvasContainer" style="background:#111;border-radius:16px;position:relative;width:1300px;height:85vh;overflow:hidden;display:flex;align-items:center;padding-bottom: 40%;justify-content: center;">
+        <canvas id="particleCanvas" style="position:absolute;top:0;left:0;width:600px;height:100%;z-index:1;display:block;"></canvas>
+        <h1 id="helloText" style="font-size:25vw;font-weight:900;letter-spacing:0.05em;color:#EA5600;font-family:'Poppins',sans-serif;z-index:2;text-transform:uppercase;position:relative;text-align:center;width:100%;">Hello World</h1>
+        <div class="scroll-indicator" style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);z-index:3;">
+          <svg width="32" height="48" viewBox="0 0 32 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="4" y="4" width="24" height="40" rx="12" stroke="#fff" stroke-width="2" fill="none"/>
+            <circle cx="16" cy="14" r="3" fill="#fff">
+              <animate attributeName="cy" values="14;20;14" dur="1.5s" repeatCount="indefinite"/>
+            </circle>
+          </svg>
+          <div class="scroll-text" style="color:#fff; font-family: 'Doto', sans-serif; font-size: 1rem;">Scroll down</div>
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <path d="M8 12l8 8 8-8" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section> -->
+
+  <section class="section" id="helloWorld" style="background:#EA5600;display:flex;justify-content:center;align-items:center;min-height:100vh;">
+    <div id="helloFrame" style="border-radius:20px;width:100%;max-width:100%;box-sizing:border-box;display:flex;align-items:center;flex-direction:column;padding:0;">
+      <div id="helloCanvasContainer" class="hello-canvas-container" style="background:#111;border-radius:16px;position:relative;width:100%;height:100vh;overflow:hidden;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;padding:0; padding-left: 5vw;">
+        <canvas id="particleCanvas" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;display:block;"></canvas>
+        <h1 id="helloText" style="font-size:10vw;font-weight:900;letter-spacing:0.101em;color:#EA5600;font-family:'Poppins',sans-serif;z-index:2;text-transform:uppercase;position:relative;text-align:left;">Hello <span id="worldText"></span></h1>
+        
+        <!-- Random Code Block -->
+        <div id="randomCode" style="font-family: 'DotGothic16', monospace; font-size: 3em; color: #EA5600; background: #111; height: 20vh; width: 80%; overflow-y: scroll; white-space: pre-wrap; margin-top: 1rem; padding: 10px; box-sizing: border-box; scrollbar-width: none; -ms-overflow-style: none;"></div>
+
+        <div id="clock" style="font-size:1.5vw;color:#EA5600;z-index:2;position:relative;text-align:left;margin-top:1rem;"></div>
+        <div class="scroll-indicator" style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);z-index:3;">
+          <svg width="32" height="48" viewBox="0 0 32 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="4" y="4" width="24" height="40" rx="12" stroke="#fff" stroke-width="2" fill="none"/>
+            <circle cx="16" cy="14" r="3" fill="#fff">
+              <animate attributeName="cy" values="14;20;14" dur="1.5s" repeatCount="indefinite"/>
+            </circle>
+          </svg>
+          <div class="scroll-text" style="color:#fff; font-family: 'Doto', sans-serif; font-size: 1rem;">Scroll down</div>
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <path d="M8 12l8 8 8-8" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
     </div>
   </section>
 
   <!-- Section 2: Selva + 3D Canvas -->
-  <section class="section selva-section" id="selvaSection" style="display:flex;flex-direction:row;justify-content:space-between;align-items:center;">
-    <div id="selvaLeft" style="margin-left: 35%;">
-      <h2 class="content__title" style="margin-left:2rem;">
-        Hi, I'm <span class="selva-gradient">Selva</span>
-      </h2>
-    </div>
-    <canvas id="threeCanvas"></canvas>
-    <div class="content" id="selvaRight" style="margin-right: 35%;">
-      <p class="content__subtitle"><span id="selvaType"></span><br />I'm playing with ThreeJS for the very first time.</p>
+  <section class="section selva-section" id="selvaSection" style="display:flex;flex-direction:row;justify-content:center;align-items:center;">
+    <div id="selvaCard" class="orange-card" style="background:#fff;color:#111;border-radius:20px;padding:2.5rem;width:90vw;box-sizing:border-box;display:flex;flex-direction:row;justify-content:space-between;align-items:center;margin:0 auto;height:85vh;">
+      <div id="selvaLeft" style="margin-left: 25%;">
+        <h2 class="content__title" style="margin-left:2rem;">
+          Hi, I'm <span class="selva-gradient">Selva</span>
+        </h2>
+      </div>
+  
+      <canvas id="threeCanvas" ></canvas>
+      <div class="content" id="selvaRight" style="margin-right: 25%;">
+        <p class="content__subtitle"><span id="selvaType"></span><br />I'm playing with ThreeJS for the very first time.</p>
+      </div>
     </div>
   </section>
 
   <!-- Section 3: Timeline -->
-  <section class="timeline-section">
+  <section class="section timeline-section">
     <h2 class="text-3xl font-bold mb-8">📜 Portfolio Timeline</h2>
     <div class="timeline-item">
       <h3>🚀 Launched Personal Website</h3>
@@ -287,6 +566,17 @@
       <p>Released an open-source component library for modern UI design with animated elements.</p>
     </div>
   </section>
+
+  <!-- Scroll Progress Indicator -->
+  <div id="scrollProgressIndicator" style="margin-left: 10%;">
+    <div class="indicator-bg"></div>
+    <div class="indicator-dots">
+      <div class="indicator-dot" data-target="#helloWorld"></div>
+      <div class="indicator-dot" data-target="#selvaSection"></div>
+      <div class="indicator-dot" data-target=".timeline-section"></div>
+    </div>
+    <div class="indicator-progress"></div>
+  </div>
 
   <script>
     gsap.registerPlugin(ScrollTrigger);
@@ -340,76 +630,27 @@
 
     const text = "Hello World";
     const helloTextElem = document.getElementById("helloText");
-    const fonts = [
-      "'Poppins', sans-serif",
-      "'Courier New', Courier, monospace",
-      "'Times New Roman', Times, serif",
-      "'Fira Mono', monospace",
-      "'Comic Sans MS', cursive, sans-serif",
-      "'Brush Script MT', cursive"
-    ];
-    const fontStyles = [
-      { style: "normal", weight: "900" },
-      { style: "italic", weight: "700" },
-      { style: "italic", weight: "700" },
-      { style: "normal", weight: "700" },
-      { style: "normal", weight: "700" },
-      { style: "italic", weight: "700" }
-    ];
-    let fontIndex = 0;
-
-    function typeAndDeleteLoop() {
-      helloTextElem.style.fontFamily = fonts[fontIndex % fonts.length];
-      helloTextElem.style.fontStyle = fontStyles[fontIndex % fonts.length].style;
-      helloTextElem.style.fontWeight = fontStyles[fontIndex % fonts.length].weight;
-      let i = 0;
-      function type() {
-        if (i <= text.length) {
-          helloTextElem.textContent = text.slice(0, i);
-          i++;
-          setTimeout(type, 80);
-        } else {
-          setTimeout(erase, 700);
-        }
-      }
-      function erase() {
-        if (i >= 0) {
-          helloTextElem.textContent = text.slice(0, i);
-          i--;
-          setTimeout(erase, 40);
-        } else {
-          fontIndex++;
-          setTimeout(typeAndDeleteLoop, 400);
-        }
-      }
-      type();
+    
+    // Clock functionality
+    function updateClock() {
+      const now = new Date();
+      const timeString = now.toLocaleTimeString('en-US', { 
+        hour12: false,
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      });
+      document.getElementById('clock').textContent = timeString;
     }
 
-    gsap.to({}, {
-      scrollTrigger: {
-        trigger: "#helloWorld",
-        start: "top 80%",
-        once: true
-      },
-      onStart: typeAndDeleteLoop
-    });
-
-    gsap.to("#helloText", {
-      scrollTrigger: {
-        trigger: "#helloWorld",
-        start: "top top",
-        end: "bottom top",
-        scrub: true
-      },
-      scale: 5,
-      color: "black",
-      ease: "none"
-    });
+    // Update clock immediately and then every second
+    updateClock();
+    setInterval(updateClock, 1000);
 
     gsap.to("#helloWorld", {
       scrollTrigger: {
         trigger: "#helloWorld",
-        start: "top top",
+        start: "bottom 30%",
         end: "bottom top",
         scrub: true
       },
@@ -421,6 +662,13 @@
       trigger: "#selvaSection",
       start: "top center",
       end: "bottom center",
+      onEnter: () => document.getElementById("topbar").classList.add("text-black"),
+      onLeaveBack: () => document.getElementById("topbar").classList.remove("text-black")
+    });
+
+    ScrollTrigger.create({
+      trigger: "#helloWorld",
+      start: "bottom top", // When the bottom of section 1 hits the top of the viewport
       onEnter: () => document.getElementById("topbar").classList.add("text-black"),
       onLeaveBack: () => document.getElementById("topbar").classList.remove("text-black")
     });
@@ -466,8 +714,8 @@
       x: "-200px", y: "-120px",
       scrollTrigger: {
         trigger: "#selvaSection",
-        start: "top top",
-        end: "bottom 80%",
+        start: "top center",
+        end: "center center",
         scrub: true
       }
     });
@@ -519,7 +767,7 @@
     gsap.to({}, {
       scrollTrigger: {
         trigger: "#selvaSection",
-        start: "top 80%",
+        start: "top center",
         once: true
       },
       onStart: selvaTypeAndDeleteLoop
@@ -528,9 +776,175 @@
     document.getElementById('aboutLink').addEventListener('click', function(e) {
       e.preventDefault();
       const section = document.getElementById('selvaSection');
-      const y = section.getBoundingClientRect().top + window.pageYOffset - -150; // 150px offset
+      const y = section.getBoundingClientRect().top + window.pageYOffset - (window.innerHeight / 2) + (section.offsetHeight / 2);
       window.scrollTo({ top: y, behavior: 'smooth' });
     });
+
+    // Smooth scroll for navigation links
+    document.querySelectorAll('.nav-item, #aboutLink').forEach(link => {
+      link.addEventListener('click', function(e) {
+        const href = this.getAttribute('href');
+        if (href && href.startsWith('#')) {
+          e.preventDefault(); // Prevent default anchor jump
+          const targetElement = document.querySelector(href);
+          if (targetElement) {
+            gsap.to(window, { duration: 1, scrollTo: targetElement, ease: "power2.inOut" });
+          }
+        }
+      });
+    });
+
+    // Animate Section 2 card background from white to orange on scroll
+    gsap.to("#selvaCard", {
+      scrollTrigger: {
+        trigger: "#selvaSection",
+        start: "top center", // Start animation when top of section hits center
+        end: "center center", // End animation when center of section hits center
+        scrub: true
+      },
+      backgroundColor: "#EA5600",
+      color: "#fff"
+    });
+
+    // Animate Section 2 background from orange to white on scroll
+    gsap.fromTo("#selvaSection", 
+      { backgroundColor: "#EA5600" }, // From orange
+      {
+      backgroundColor: "#ffffff", // To white
+      ease: "none",
+      scrollTrigger: {
+        trigger: "#selvaSection",
+        start: "top bottom", // Start animation when top of section hits bottom of viewport
+        end: "center center", // End animation when center of section hits center
+        scrub: true,
+        markers: false // Set to true for debugging if needed
+      }
+    });
+
+    // Scroll Progress Indicator Animation
+    gsap.to("#scrollProgressIndicator .indicator-progress", {
+      height: "calc(100% - 30px)", // Adjust height to account for padding
+      ease: "none",
+      scrollTrigger: {
+        trigger: "body", // Or a container that encompasses all scrollable sections
+        start: "top top",
+        end: "bottom bottom",
+        scrub: true
+      }
+    });
+
+    // Make dots clickable and update active state on scroll
+    const indicatorDots = document.querySelectorAll(".indicator-dot");
+    const sections = document.querySelectorAll(".section, .timeline-section"); // Select all relevant sections
+
+    // Use ScrollTrigger to update active dot on scroll
+    sections.forEach((section, index) => {
+      ScrollTrigger.create({
+        trigger: section,
+        start: "top center",
+        end: "bottom center",
+        onEnter: () => {
+          indicatorDots.forEach(dot => dot.classList.remove("active"));
+          if (indicatorDots[index]) {
+            indicatorDots[index].classList.add("active");
+          }
+        },
+        onEnterBack: () => {
+          indicatorDots.forEach(dot => dot.classList.remove("active"));
+          if (indicatorDots[index]) {
+            indicatorDots[index].classList.add("active");
+          }
+        }
+      });
+    });
+
+    // Random Code effect
+    const randomCodeElem = document.getElementById('randomCode');
+    const characters = 'あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをんアイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン'; // Japanese characters
+    const codeLength = 2000; // Number of characters to generate initially
+
+    // Typing effect for "World"
+    const worldText = document.getElementById('worldText');
+    const words = [
+        "World",      // English
+        "世界",       // Japanese
+        "Mundo",      // Spanish
+        "Monde",      // French
+        "Welt",       // German
+        "Mondo",      // Italian
+        "Mundo",      // Portuguese
+        "Dünya",      // Turkish
+        "세계",       // Korean
+        "世界",       // Chinese
+        "Dünya",      // Azerbaijani
+        "Dünya",      // Turkmen
+        "உலகம்"      // Tamil
+    ];
+    let currentWordIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+
+    function typeWord() {
+        const currentWord = words[currentWordIndex];
+        
+        if (!isDeleting) {
+            // Typing forward
+            if (charIndex < currentWord.length) {
+                worldText.textContent = currentWord.substring(0, charIndex + 1);
+                charIndex++;
+                setTimeout(typeWord, 200);
+            } else {
+                // Finished typing, wait then start deleting
+                setTimeout(() => {
+                    isDeleting = true;
+                    typeWord();
+                }, 2000);
+            }
+        } else {
+            // Deleting backward
+            if (charIndex > 0) {
+                worldText.textContent = currentWord.substring(0, charIndex - 1);
+                charIndex--;
+                setTimeout(typeWord, 100); // Faster backspace
+            } else {
+                // Finished deleting, switch words
+                isDeleting = false;
+                currentWordIndex = (currentWordIndex + 1) % words.length;
+                setTimeout(typeWord, 500); // Pause before starting next word
+            }
+        }
+    }
+
+    // Start the typing effect
+    typeWord();
+
+    function generateRandomCode() {
+      let code = '';
+      for (let i = 0; i < codeLength; i++) {
+        code += characters.charAt(Math.floor(Math.random() * characters.length));
+        if (i > 0 && i % 80 === 0) {
+          code += '\n'; // Add newline for better formatting
+        }
+      }
+      randomCodeElem.textContent = code;
+    }
+
+    function scrollCode() {
+      if (randomCodeElem.scrollHeight > randomCodeElem.clientHeight) {
+        randomCodeElem.scrollTop += 1;
+        // If scrolled to bottom, append more code to keep it scrolling
+        if (randomCodeElem.scrollTop + randomCodeElem.clientHeight >= randomCodeElem.scrollHeight - 1) { // Adjusted condition
+          generateRandomCode(); // Add more code
+          randomCodeElem.scrollTop = randomCodeElem.scrollHeight - randomCodeElem.clientHeight - 20; // Adjust scroll position slightly
+        }
+      }
+    }
+
+    // Generate initial code
+    generateRandomCode();
+
+    // Start scrolling effect
+    setInterval(scrollCode, 15); // Reduced interval from 30 to 15 for faster scrolling
   </script>
 </body>
 </html>
