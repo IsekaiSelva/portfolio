@@ -1,950 +1,1250 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Hello Scroll + Portfolio</title>
-
-  <!-- Fonts & Libraries -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet"/>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/ScrollTrigger.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.153.0/build/three.min.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Doto:wght@100..900&display=swap" rel="stylesheet">
-
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Doto', 'Poppins', sans-serif;
-      scroll-behavior: smooth;
-      overflow-x: hidden;
-      background: #EA5600;
-    }
-
-    /* Topbar */
-    header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      z-index: 1000;
-      padding: 1.25rem 2rem;
-      display: flex;
-      justify-content: center;
-      background: transparent;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      font-size: 1.2rem;
-      color: white;
-      transition: color 0.5s ease;
-    }
-
-    nav {
-      display: flex;
-      gap: 2.5rem;
-    }
-
-    .nav-item {
-      position: relative;
-      color: inherit;
-      text-decoration: none;
-      transition: color 0.3s ease;
-    }
-
-    .nav-item::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      bottom: -3px;
-      height: 2px;
-      width: 100%;
-      background-color: #ff50b8;
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform 0.3s ease;
-    }
-
-    .nav-item:hover::after {
-      transform: scaleX(1);
-    }
-
-    header.text-black {
-      color: black;
-    }
-
-    header.text-black .nav-item::after {
-      background-color: black;
-    }
-
-    .section {
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    #helloWorld {
-      background: #EA5600;
-      position: relative;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    #particleCanvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1;
-      pointer-events: none;
-    }
-
-    #helloText {
-      font-size: 10vw;
-      font-weight: 900;
-      letter-spacing: 0.101em;
-      color: #EA5600;
-      font-family: 'Poppins', sans-serif;
-      text-transform: uppercase;
-      z-index: 2;
-      position: relative;
-      text-align: center;
-      width: 100%;
-    }
-
-    #clock {
-      font-size: 1.5vw;
-      color: #EA5600;
-      font-family: 'Poppins', sans-serif;
-      z-index: 2;
-      position: relative;
-      text-align: center;
-      width: 100%;
-      margin-top: 1rem;
-    }
-
-    .selva-section {
-      background: #EA5600; /* Initially orange */
-      color: black;
-      position: relative;
-      overflow: hidden;
-      height: 100vh;
-      align-items: center;
-    }
-
-    #threeCanvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-      pointer-events: none;
-      margin-top: 0%; /* Adjusted to move higher */
-    }
-
-    .content {
-      position: relative;
-      z-index: 2;
-      padding: 2rem;
-    }
-
-    .content__title {
-      font-size: 3.5rem;
-      font-weight: 800;
-    }
-
-    .selva-gradient {
-      background: linear-gradient(270deg, #ffb04f, #ff8961, #ff50b8, #cb5eee, #ffb04f);
-      background-size: 200% 200%;
-      background-clip: text;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      color: transparent;
-      animation: gradientMove 4s linear infinite;
-      transition: background-position 0.5s;
-      display: inline-block;
-    }
-
-    @keyframes gradientMove {
-      0% { background-position: 0% 50%; }
-      100% { background-position: 100% 50%; }
-    }
-
-    .content__subtitle {
-      font-size: 1.8rem;
-      margin-top: 1rem;
-    }
-
-    .timeline-section {
-      background: #f5f5f5;
-      padding: 100px 10%;
-      color: #111;
-    }
-
-    .timeline-item {
-      border-left: 2px solid #888;
-      padding-left: 20px;
-      margin-bottom: 40px;
-      position: relative;
-    }
-
-    .timeline-item::before {
-      content: '';
-      width: 12px;
-      height: 12px;
-      background: #ff50b8;
-      border-radius: 50%;
-      position: absolute;
-      left: -7px;
-      top: 5px;
-    }
-
-    .timeline-item h3 {
-      font-size: 1.2rem;
-      margin-bottom: 5px;
-    }
-
-    .timeline-item span {
-      font-size: 0.9rem;
-      color: #666;
-    }
-
-    .timeline-item p {
-      margin-top: 10px;
-    }
-
-    .scroll-indicator {
-      width: 100vw;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      position: absolute;
-      bottom: 8px;
-      left: 0;
-      z-index: 10;
-      pointer-events: none;
-    }
-
-    .scroll-indicator svg {
-      margin-top: 4px;
-    }
-
-    .scroll-indicator .scroll-text {
-      color: #888;
-      font-size: 1rem;
-      margin-top: 8px;
-      font-family: 'Poppins', sans-serif;
-      letter-spacing: 1px;
-    }
-
-    .hello-canvas-container {
-      width: 100%;
-      height: 100vh; /* Set height to 100vh */
-      max-width: none;
-      position: relative;
-      overflow: hidden;
-      border-radius: 16px;
-      background: #111;
-      display: flex;
-      flex-direction: column; /* Stack children vertically */
-      align-items: center; /* Center children horizontally */
-      justify-content: center; /* Center children vertically */
-      padding: 0;
-    }
-
-    #particleCanvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1;
-      pointer-events: none;
-      display: block;
-    }
-
-    /* Scroll Progress Indicator */
-    #scrollProgressIndicator {
-      position: fixed;
-      top: 50%;
-      right: 20px;
-      bottom: auto;
-      left: auto;
-      transform: translateY(-50%);
-      z-index: 1001;
-      width: 40px;
-      height: 200px;
-      background-color: rgba(255, 255, 255, 0.8);
-      border-radius: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-direction: column;
-      padding: 15px 0;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    #scrollProgressIndicator .indicator-dots {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
-
-    #scrollProgressIndicator .indicator-dot {
-      width: 8px;
-      height: 8px;
-      background-color: #888;
-      border-radius: 50%;
-      transition: width 0.3s ease, background-color 0.3s ease;
-      cursor: pointer;
-      transform-origin: 50% 50%;
-    }
-
-    #scrollProgressIndicator .indicator-dot.active {
-      width: 20px; /* Elongated shape */
-      border-radius: 4px; /* Pill shape */
-      background-color: #EA5600; /* Orange accent color for active */
-    }
-
-    #scrollProgressIndicator .indicator-progress {
-      position: absolute;
-      bottom: 15px; /* Start from the bottom */
-      left: 50%; /* Center horizontally */
-      transform: translateX(-50%);
-      width: 8px;
-      height: 0%; /* Will be animated - starts at 0 height */
-      background-color: #333;
-      border-radius: 4px;
-      z-index: 1;
-      display: none; /* Hide the vertical progress bar */
-    }
-
-    #scrollProgressIndicator .indicator-bg {
-      /* This div might not be needed if styling the container */
-      display: none;
-    }
-
-    /* Responsive Adjustments */
-    @media (max-width: 768px) {
-      header {
-        padding: 1rem;
-        font-size: 0.8rem;
-      }
-
-      nav {
-        gap: 1rem;
-      }
-
-      #helloWorld {
-        padding: 1rem;
-      }
-
-      #helloCanvasContainer {
-        width: 100% !important;
-        height: 100vh !important;
-        padding: 1rem !important;
-      }
-
-      #helloText {
-        font-size: 15vw !important;
-        margin-bottom: 1rem !important;
-      }
-
-      #randomCode {
-        font-size: 1.5em !important;
-        width: 90% !important;
-        height: 15vh !important;
-      }
-
-      #clock {
-        font-size: 1rem !important;
-      }
-
-      .selva-section {
-        flex-direction: column !important;
-        padding: 2rem 1rem !important;
-        height: auto !important;
-      }
-
-      #selvaCard {
-        width: 95% !important;
-        margin: 1rem auto !important;
-        height: auto !important;
-        flex-direction: column !important;
-        padding: 1.5rem !important;
-      }
-
-      #selvaLeft,
-      #selvaRight {
-        margin: 0 !important;
-        width: 100% !important;
-        text-align: center !important;
-      }
-
-      .content__title {
-        font-size: 2.5rem !important;
-        margin-left: 0 !important;
-      }
-
-      .content__subtitle {
-        font-size: 1.2rem !important;
-      }
-
-      #threeCanvas {
-        position: relative !important;
-        margin: 2rem auto !important;
-        width: 100% !important;
-        height: 300px !important;
-      }
-
-      .timeline-section {
-        padding: 2rem 1rem;
-      }
-
-      .timeline-item {
-        margin-bottom: 30px;
-      }
-
-      /* Hide vertical scroll indicator on small screens */
-      #scrollProgressIndicator {
-        display: none !important;
-      }
-
-      /* Adjust scroll indicator for mobile */
-      .scroll-indicator {
-        bottom: 20px !important;
-      }
-
-      .scroll-indicator svg {
-        width: 24px !important;
-        height: 36px !important;
-      }
-
-      .scroll-text {
-        font-size: 0.8rem !important;
-      }
-    }
-
-    /* Additional adjustments for very small screens */
-    @media (max-width: 480px) {
-      header {
-        font-size: 0.7rem;
-      }
-
-      nav {
-        gap: 0.8rem;
-      }
-
-      #helloText {
-        font-size: 18vw !important;
-      }
-
-      .content__title {
-        font-size: 2rem !important;
-      }
-
-      .content__subtitle {
-        font-size: 1rem !important;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selvakumaran // Portfolio</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=Lato:wght@300;400;700;900&family=Alfa+Slab+One&family=Fibon+Neue:wght@300;400;700;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* Loader */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        
+        .loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .loader-content {
+            text-align: center;
+        }
+        
+        .loader-bat {
+            width: 100px;
+            height: 100px;
+            background-image: url('77804eda54e8db8f167ad38d95cf632f.gif');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+            margin: 0 auto;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #ffffff;
+            color: #000;
+            line-height: 1.6;
+        }
+        
+        body.loading {
+            overflow: hidden;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Opening Section - Full Screen */
+        .opening-section {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            z-index: 1;
+            transition: opacity 0.3s ease;
+        }
+        
+        /* Top Navigation */
+        .top-nav {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 40px 60px;
+            display: flex;
+            gap: 40px;
+            font-size: 11px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            font-weight: 600;
+            z-index: 10;
+        }
+        
+        .top-nav a {
+            color: #000;
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+        }
+        
+        .top-nav a:hover {
+            opacity: 0.4;
+        }
+        
+        /* Hero Name */
+        .hero-name {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            text-align: center;
+            z-index: 10;
+        }
+        
+        .hero-name h1 {
+            font-size: clamp(60px, 15vw, 220px);
+            font-weight: 900;
+            letter-spacing: -0.02em;
+            line-height: 0.9;
+            color: #1a1a1a;
+            margin: 0;
+            text-transform: uppercase;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        /* Circles decoration */
+        .circles {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: clamp(200px, 40vh, 400px);
+            display: flex;
+            gap: 0;
+            align-items: flex-end;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .circle {
+            background: #e0e0e0;
+            border-radius: 50%;
+            flex-shrink: 0;
+            position: relative;
+        }
+        
+        .circle-1 {
+            width: clamp(150px, 25vw, 300px);
+            height: clamp(150px, 25vw, 300px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .circle-text {
+            position: absolute;
+            width: 70%;
+            text-align: center;
+            font-size: clamp(8px, 1vw, 11px);
+            letter-spacing: clamp(0.5px, 0.1vw, 1px);
+            text-transform: uppercase;
+            color: #666;
+            line-height: 1.6;
+            padding: clamp(10px, 2vw, 20px);
+        }
+        
+        .circle-2 {
+            width: clamp(150px, 25vw, 300px);
+            height: clamp(150px, 25vw, 300px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .circle-2-text {
+            position: absolute;
+            width: 70%;
+            text-align: center;
+            font-size: clamp(8px, 1vw, 11px);
+            letter-spacing: clamp(0.5px, 0.1vw, 1px);
+            text-transform: uppercase;
+            color: #666;
+            line-height: 1.6;
+            padding: clamp(10px, 2vw, 20px);
+        }
+        
+        .circle-3 {
+            width: clamp(400px, 60vw, 900px);
+            height: clamp(150px, 25vw, 300px);
+            border-radius: clamp(75px, 12.5vw, 150px);
+        }
+        
+        /* Decorative Dots */
+        .dot {
+            width: 8px;
+            height: 8px;
+            background: #1a1a1a;
+            border-radius: 50%;
+            position: absolute;
+            z-index: 10;
+        }
+        
+        .dot-1 { top: 20px; left: 20px; }
+        .dot-2 { top: 20px; left: 50%; transform: translateX(-50%); }
+        .dot-3 { top: 20px; right: 20px; }
+        .dot-4 { top: 50%; right: 20px; }
+        .dot-5 { bottom: clamp(220px, 44vh, 420px); right: 20px; }
+        
+        /* Scroll Indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: clamp(80px, 15vh, 120px);
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #999;
+            animation: bounce 2s infinite;
+            z-index: 10;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        
+        .scroll-indicator:hover {
+            color: #000;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-10px); }
+        }
+        
+        .scroll-indicator::after {
+            content: '▼';
+            display: block;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        
+        /* Bottom Section */
+        .bottom-section {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            padding: clamp(30px, 5vw, 60px);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            z-index: 10;
+        }
+        
+        .copyright {
+            font-size: 11px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #999;
+            max-width: 400px;
+            line-height: 1.6;
+            display: none; /* Hidden as it's now in the circle */
+        }
+        
+        .location {
+            font-size: clamp(10px, 1.2vw, 12px);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #666;
+            text-align: right;
+            display: none; /* Hidden as it's now in the circle */
+        }
+        
+        /* Pixelated Bat */
+        .bat {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            width: 80px;
+            height: 80px;
+            z-index: 100;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            background-image: url('77804eda54e8db8f167ad38d95cf632f.gif');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        
+        .bat:hover {
+            transform: scale(1.2);
+        }
+        
+        /* Main Content Section */
+        .main-content {
+            background: #ffffff;
+            color: #1a1a1a;
+            position: relative;
+            z-index: 2;
+            min-height: 100vh;
+            transform: translateY(100vh);
+            border-radius: 50px 50px 0 0;
+            box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.1);
+            border-top: 3px solid #1a1a1a;
+            border-left: 3px solid #1a1a1a;
+            border-right: 3px solid #1a1a1a;
+        }
+        
+        /* Spacer to allow scroll */
+        .scroll-spacer {
+            height: 100vh;
+            width: 100%;
+        }
+        
+        /* Custom cursor effect on hover areas */
+        .card, .contact-link, .tag {
+            cursor: pointer;
+        }
+        
+        /* Track Background */
+        .track-bg {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-15deg);
+            width: 70%;
+            max-width: 800px;
+            height: 500px;
+            background-image: url('/mnt/user-data/uploads/1766332648765_image.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 0.04;
+            z-index: 0;
+            pointer-events: none;
+            transition: transform 0.3s ease-out;
+        }
+        
+        /* Container */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 80px 40px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Hero */
+        .hero {
+            min-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            margin-bottom: 120px;
+        }
+        
+        .hero h1 {
+            font-size: 64px;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 16px;
+            letter-spacing: -2px;
+        }
+        
+        .name-hover .char {
+            display: inline-block;
+            transition: color 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .name-hover .char:hover {
+            color: #ff0000;
+        }
+        
+        /* Previous character gets 50% red gradient */
+        .name-hover .char:has(+ .char:hover) {
+            background: linear-gradient(90deg, #000000 0%, #ff0000 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Next character gets 50% red gradient */
+        .name-hover .char:hover + .char {
+            background: linear-gradient(90deg, #ff0000 0%, #000000 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero p {
+            font-size: 24px;
+            color: #666;
+            font-weight: 300;
+            margin-bottom: 40px;
+        }
+        
+        .stats {
+            display: flex;
+            gap: 60px;
+            margin-top: 60px;
+        }
+        
+        .stat {
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat:hover {
+            transform: translateY(-4px);
+        }
+        
+        .stat-value {
+            font-size: 48px;
+            font-weight: 700;
+            color: #000;
+            line-height: 1;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        .stat-value.animate {
+            animation: countUp 1s ease forwards;
+        }
+        
+        @keyframes countUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 8px;
+        }
+        
+        /* Sections */
+        section {
+            margin-bottom: 120px;
+        }
+        
+        h2 {
+            font-size: 36px;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 50px;
+            letter-spacing: -1px;
+        }
+        
+        /* Cards */
+        .card {
+            background: #fff;
+            padding: 40px;
+            margin-bottom: 24px;
+            border-radius: 4px;
+            border-left: 3px solid #000;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.02), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .card:hover::before {
+            left: 100%;
+        }
+        
+        .card:hover {
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            transform: translateX(8px);
+            border-left-width: 5px;
+            border-left-color: #ff0000;
+        }
+        
+        .card-meta {
+            font-size: 13px;
+            color: #999;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+        
+        .card-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #000;
+            margin-bottom: 8px;
+        }
+        
+        .card-subtitle {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        .card-description {
+            font-size: 15px;
+            color: #666;
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+        
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .tag {
+            font-size: 11px;
+            padding: 6px 12px;
+            background: #f0f0f0;
+            color: #666;
+            border-radius: 3px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            cursor: default;
+        }
+        
+        .tag:hover {
+            background: #000;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+        
+        /* Skills */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 50px;
+        }
+        
+        .skill-category h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #000;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .skill-item {
+            margin-bottom: 20px;
+        }
+        
+        .skill-name {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        
+        .skill-percent {
+            color: #000;
+            font-weight: 600;
+        }
+        
+        .skill-bar-bg {
+            height: 4px;
+            background: #e0e0e0;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        
+        .skill-bar-fill {
+            height: 100%;
+            background: #000;
+            border-radius: 2px;
+            transition: width 1s ease;
+        }
+        
+        /* Footer */
+        .footer {
+            padding: 80px 0;
+            text-align: center;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .footer h2 {
+            font-size: 32px;
+            margin-bottom: 30px;
+        }
+        
+        .contact-links {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+        
+        .contact-link {
+            font-size: 14px;
+            color: #000;
+            text-decoration: none;
+            padding: 12px 28px;
+            border: 1.5px solid #000;
+            border-radius: 3px;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+        
+        .contact-link:hover {
+            background: #000;
+            color: #fff;
+        }
+        
+        /* Scroll indicator */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #000;
+            z-index: 100;
+            transition: width 0.1s ease;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .top-nav {
+                flex-direction: column;
+                gap: 20px;
+                padding: 30px;
+                font-size: 10px;
+            }
+            
+            .bottom-section {
+                flex-direction: column;
+                gap: 40px;
+                padding: 30px;
+                align-items: flex-start;
+            }
+            
+            .location {
+                text-align: left;
+            }
+            
+            .hero h1 {
+                font-size: 42px;
+            }
+            
+            .hero p {
+                font-size: 18px;
+            }
+            
+            .stats {
+                flex-direction: column;
+                gap: 30px;
+            }
+            
+            h2 {
+                font-size: 28px;
+            }
+            
+            .skills-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            
+            .container {
+                padding: 60px 24px;
+            }
+        }
+        
+        /* Fade in animation */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease;
+        }
+        
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
 </head>
-<body>
-
-  <!-- 🔝 Top Navigation Bar -->
-  <header id="topbar">
-    <nav>
-      <a href="#selvaSection" class="nav-item" id="aboutLink">ABOUT</a>
-      <a href="#timelineSection" class="nav-item flex items-center gap-1">
-        PORTFOLIO
-        <svg width="20" height="12" viewBox="0 0 20 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M1 6C3 1 7 1 10 6C13 11 17 11 19 6" stroke="currentColor" stroke-width="1.5"/>
-          <circle cx="10" cy="6" r="1.5" fill="currentColor"/>
-        </svg>
-      </a>
-      <a href="#demo" class="nav-item">FACTS
-      
-      </a>
-      <a href="#news" class="nav-item">NEWS</a>
-    </nav>
-  </header>
-
-  <!-- Section 1: Hello World -->
-  <!-- <section class="section" id="helloWorld" style="background:#EA5600;display:flex;justify-content:center;align-items:center;min-height:100vh;">
-    <div id="helloFrame" style="border-radius:20px;padding:2.5rem;width:90vw;max-width:1200px;box-sizing:border-box;display:flex;align-items:center;flex-direction:column;">
-      <div id="helloCanvasContainer" style="background:#111;border-radius:16px;position:relative;width:1300px;height:85vh;overflow:hidden;display:flex;align-items:center;padding-bottom: 40%;justify-content: center;">
-        <canvas id="particleCanvas" style="position:absolute;top:0;left:0;width:600px;height:100%;z-index:1;display:block;"></canvas>
-        <h1 id="helloText" style="font-size:25vw;font-weight:900;letter-spacing:0.05em;color:#EA5600;font-family:'Poppins',sans-serif;z-index:2;text-transform:uppercase;position:relative;text-align:center;width:100%;">Hello World</h1>
-        <div class="scroll-indicator" style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);z-index:3;">
-          <svg width="32" height="48" viewBox="0 0 32 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="4" y="4" width="24" height="40" rx="12" stroke="#fff" stroke-width="2" fill="none"/>
-            <circle cx="16" cy="14" r="3" fill="#fff">
-              <animate attributeName="cy" values="14;20;14" dur="1.5s" repeatCount="indefinite"/>
-            </circle>
-          </svg>
-          <div class="scroll-text" style="color:#fff; font-family: 'Doto', sans-serif; font-size: 1rem;">Scroll down</div>
-          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-            <path d="M8 12l8 8 8-8" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+<body class="loading">
+    <!-- Loader -->
+    <div class="loader" id="loader">
+        <div class="loader-content">
+            <div class="loader-bat"></div>
         </div>
-      </div>
     </div>
-  </section> -->
 
-  <section class="section" id="helloWorld" style="background:#EA5600;display:flex;justify-content:center;align-items:center;min-height:100vh;">
-    <div id="helloFrame" style="border-radius:20px;width:100%;max-width:100%;box-sizing:border-box;display:flex;align-items:center;flex-direction:column;padding:0;">
-      <div id="helloCanvasContainer" class="hello-canvas-container" style="background:#111;border-radius:16px;position:relative;width:100%;height:100vh;overflow:hidden;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;padding:0; padding-left: 5vw;">
-        <canvas id="particleCanvas" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;display:block;"></canvas>
-        <h1 id="helloText" style="font-size:10vw;font-weight:900;letter-spacing:0.101em;color:#EA5600;font-family:'Poppins',sans-serif;z-index:2;text-transform:uppercase;position:relative;text-align:left;">Hello <span id="worldText"></span></h1>
-        
-        <!-- Random Code Block -->
-        <div id="randomCode" style="font-family: 'DotGothic16', monospace; font-size: 3em; color: #EA5600; background: #111; height: 20vh; width: 80%; overflow-y: scroll; white-space: pre-wrap; margin-top: 1rem; padding: 10px; box-sizing: border-box; scrollbar-width: none; -ms-overflow-style: none;"></div>
+    <!-- Scroll Progress Bar -->
+    <div class="scroll-progress" id="scrollProgress"></div>
 
-        <div id="clock" style="font-size:1.5vw;color:#EA5600;z-index:2;position:relative;text-align:left;margin-top:1rem;"></div>
-        <div class="scroll-indicator" style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);z-index:3;">
-          <svg width="32" height="48" viewBox="0 0 32 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="4" y="4" width="24" height="40" rx="12" stroke="#fff" stroke-width="2" fill="none"/>
-            <circle cx="16" cy="14" r="3" fill="#fff">
-              <animate attributeName="cy" values="14;20;14" dur="1.5s" repeatCount="indefinite"/>
-            </circle>
-          </svg>
-          <div class="scroll-text" style="color:#fff; font-family: 'Doto', sans-serif; font-size: 1rem;">Scroll down</div>
-          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-            <path d="M8 12l8 8 8-8" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+    <!-- Pixelated Bat -->
+    <div class="bat" id="bat" title="Click to scroll to top 🦇"></div>
+
+    <!-- Opening Section -->
+    <section class="opening-section">
+        <div class="hero-name">
+            <h1>HELLO<br>THERE</h1>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Section 2: Selva + 3D Canvas -->
-  <section class="section selva-section" id="selvaSection" style="display:flex;flex-direction:row;justify-content:center;align-items:center;">
-    <div id="selvaCard" class="orange-card" style="background:#fff;color:#111;border-radius:20px;padding:2.5rem;width:90vw;box-sizing:border-box;display:flex;flex-direction:row;justify-content:space-between;align-items:center;margin:0 auto;height:85vh;">
-      <div id="selvaLeft" style="margin-left: 25%;">
-        <h2 class="content__title" style="margin-left:2rem;">
-          Hi, I'm <span class="selva-gradient">Selva</span>
-        </h2>
-      </div>
-  
-      <canvas id="threeCanvas" ></canvas>
-      <div class="content" id="selvaRight" style="margin-right: 25%;">
-        <p class="content__subtitle"><span id="selvaType"></span><br />I'm playing with ThreeJS for the very first time.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Section 3: Timeline -->
-  <section class="section timeline-section">
-    <h2 class="text-3xl font-bold mb-8">📜 Portfolio Timeline</h2>
-    <div class="timeline-item">
-      <h3>🚀 Launched Personal Website</h3>
-      <span>2023</span>
-      <p>Built my first portfolio website using React and TailwindCSS to showcase my frontend skills.</p>
-    </div>
-    <div class="timeline-item">
-      <h3>🎮 Built Interactive Game</h3>
-      <span>2024</span>
-      <p>Developed a physics-based browser game using Three.js and WebGL for learning simulations.</p>
-    </div>
-    <div class="timeline-item">
-      <h3>📦 Released UI Kit</h3>
-      <span>2025</span>
-      <p>Released an open-source component library for modern UI design with animated elements.</p>
-    </div>
-  </section>
-
-  <!-- Scroll Progress Indicator -->
-  <div id="scrollProgressIndicator" style="margin-left: 10%;">
-    <div class="indicator-bg"></div>
-    <div class="indicator-dots">
-      <div class="indicator-dot" data-target="#helloWorld"></div>
-      <div class="indicator-dot" data-target="#selvaSection"></div>
-      <div class="indicator-dot" data-target=".timeline-section"></div>
-    </div>
-    <div class="indicator-progress"></div>
-  </div>
-
-  <script>
-    gsap.registerPlugin(ScrollTrigger);
-
-    // Particle System Setup
-    const particleCanvas = document.getElementById("particleCanvas");
-    const particleScene = new THREE.Scene();
-    const particleCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const particleRenderer = new THREE.WebGLRenderer({ canvas: particleCanvas, alpha: true });
-    particleRenderer.setSize(window.innerWidth, window.innerHeight);
-    particleRenderer.setPixelRatio(window.devicePixelRatio);
-
-    // Create particles
-    const particlesGeometry = new THREE.BufferGeometry();
-    const particlesCount = 2000;
-    const posArray = new Float32Array(particlesCount * 3);
-
-    for(let i = 0; i < particlesCount * 3; i++) {
-        posArray[i] = (Math.random() - 0.5) * 5;
-    }
-
-    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-
-    const particlesMaterial = new THREE.PointsMaterial({
-        size: 0.005,
-        color: '#ffffff',
-        transparent: true,
-        opacity: 0.8
-    });
-
-    const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
-    particleScene.add(particlesMesh);
-    particleCamera.position.z = 2;
-
-    // Particle animation
-    const animateParticles = () => {
-        requestAnimationFrame(animateParticles);
-        particlesMesh.rotation.x += 0.0005;
-        particlesMesh.rotation.y += 0.0005;
-        particleRenderer.render(particleScene, particleCamera);
-    };
-
-    animateParticles();
-
-    // Handle window resize for particle system
-    window.addEventListener("resize", () => {
-        particleCamera.aspect = window.innerWidth / window.innerHeight;
-        particleCamera.updateProjectionMatrix();
-        particleRenderer.setSize(window.innerWidth, window.innerHeight);
-    });
-
-    const text = "Hello World";
-    const helloTextElem = document.getElementById("helloText");
-    
-    // Clock functionality
-    function updateClock() {
-      const now = new Date();
-      const timeString = now.toLocaleTimeString('en-US', { 
-        hour12: false,
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit'
-      });
-      document.getElementById('clock').textContent = timeString;
-    }
-
-    // Update clock immediately and then every second
-    updateClock();
-    setInterval(updateClock, 1000);
-
-    gsap.to("#helloWorld", {
-      scrollTrigger: {
-        trigger: "#helloWorld",
-        start: "bottom 30%",
-        end: "bottom top",
-        scrub: true
-      },
-      backgroundColor: "#ffffff",
-      ease: "none"
-    });
-
-    ScrollTrigger.create({
-      trigger: "#selvaSection",
-      start: "top center",
-      end: "bottom center",
-      onEnter: () => document.getElementById("topbar").classList.add("text-black"),
-      onLeaveBack: () => document.getElementById("topbar").classList.remove("text-black")
-    });
-
-    ScrollTrigger.create({
-      trigger: "#helloWorld",
-      start: "bottom top", // When the bottom of section 1 hits the top of the viewport
-      onEnter: () => document.getElementById("topbar").classList.add("text-black"),
-      onLeaveBack: () => document.getElementById("topbar").classList.remove("text-black")
-    });
-
-    const canvas = document.getElementById("threeCanvas");
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 100);
-    camera.position.z = 3;
-    scene.add(camera);
-
-    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(window.devicePixelRatio);
-
-    const geometry = new THREE.TorusKnotGeometry(0.5, 0.2, 200, 30);
-    const textureLoader = new THREE.TextureLoader();
-    const matcap = textureLoader.load("https://bruno-simon.com/prismic/matcaps/3.png");
-    const material = new THREE.MeshMatcapMaterial({ matcap });
-    const mesh = new THREE.Mesh(geometry, material);
-    scene.add(mesh);
-
-    window.addEventListener("resize", () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    });
-
-    const animate = () => {
-      requestAnimationFrame(animate);
-      mesh.rotation.x += 0.01;
-      mesh.rotation.y += 0.01;
-
-      const selvaTop = document.getElementById("selvaSection").getBoundingClientRect().top;
-      const windowHeight = window.innerHeight;
-      if (selvaTop < windowHeight && selvaTop > -windowHeight) {
-        renderer.render(scene, camera);
-      }
-    };
-
-    animate();
-
-    gsap.fromTo("#selvaLeft", { x: 0 }, {
-      x: "-200px", y: "-120px",
-      scrollTrigger: {
-        trigger: "#selvaSection",
-        start: "top center",
-        end: "center center",
-        scrub: true
-      }
-    });
-
-    gsap.fromTo("#selvaRight", { x: 0 }, {
-      x: "400px",
-      scrollTrigger: {
-        trigger: "#selvaSection",
-        start: "top 80%",
-        end: "bottom 80%",
-        scrub: true
-      }
-    });
-
-    // --- Selva Section Typewriter Effect ---
-    const selvaLines = [
-      "I'm a Front End Developer",
-      "I'm Q/A tester",
-      "I'm Cyber Security enthusiast"
-    ];
-    const selvaTypeElem = document.getElementById("selvaType");
-    let selvaLineIndex = 0;
-
-    function selvaTypeAndDeleteLoop() {
-      const line = selvaLines[selvaLineIndex % selvaLines.length];
-      let i = 0;
-      function type() {
-        if (i <= line.length) {
-          selvaTypeElem.textContent = line.slice(0, i);
-          i++;
-          setTimeout(type, 70);
-        } else {
-          setTimeout(erase, 700);
-        }
-      }
-      function erase() {
-        if (i >= 0) {
-          selvaTypeElem.textContent = line.slice(0, i);
-          i--;
-          setTimeout(erase, 35);
-        } else {
-          selvaLineIndex++;
-          setTimeout(selvaTypeAndDeleteLoop, 400);
-        }
-      }
-      type();
-    }
-    // Start the effect when selvaSection is in view
-    gsap.to({}, {
-      scrollTrigger: {
-        trigger: "#selvaSection",
-        start: "top center",
-        once: true
-      },
-      onStart: selvaTypeAndDeleteLoop
-    });
-
-    document.getElementById('aboutLink').addEventListener('click', function(e) {
-      e.preventDefault();
-      const section = document.getElementById('selvaSection');
-      const y = section.getBoundingClientRect().top + window.pageYOffset - (window.innerHeight / 2) + (section.offsetHeight / 2);
-      window.scrollTo({ top: y, behavior: 'smooth' });
-    });
-
-    // Smooth scroll for navigation links
-    document.querySelectorAll('.nav-item, #aboutLink').forEach(link => {
-      link.addEventListener('click', function(e) {
-        const href = this.getAttribute('href');
-        if (href && href.startsWith('#')) {
-          e.preventDefault(); // Prevent default anchor jump
-          const targetElement = document.querySelector(href);
-          if (targetElement) {
-            gsap.to(window, { duration: 1, scrollTo: targetElement, ease: "power2.inOut" });
-          }
-        }
-      });
-    });
-
-    // Animate Section 2 card background from white to orange on scroll
-    gsap.to("#selvaCard", {
-      scrollTrigger: {
-        trigger: "#selvaSection",
-        start: "top center", // Start animation when top of section hits center
-        end: "center center", // End animation when center of section hits center
-        scrub: true
-      },
-      backgroundColor: "#EA5600",
-      color: "#fff"
-    });
-
-    // Animate Section 2 background from orange to white on scroll
-    gsap.fromTo("#selvaSection", 
-      { backgroundColor: "#EA5600" }, // From orange
-      {
-      backgroundColor: "#ffffff", // To white
-      ease: "none",
-      scrollTrigger: {
-        trigger: "#selvaSection",
-        start: "top bottom", // Start animation when top of section hits bottom of viewport
-        end: "center center", // End animation when center of section hits center
-        scrub: true,
-        markers: false // Set to true for debugging if needed
-      }
-    });
-
-    // Scroll Progress Indicator Animation
-    gsap.to("#scrollProgressIndicator .indicator-progress", {
-      height: "calc(100% - 30px)", // Adjust height to account for padding
-      ease: "none",
-      scrollTrigger: {
-        trigger: "body", // Or a container that encompasses all scrollable sections
-        start: "top top",
-        end: "bottom bottom",
-        scrub: true
-      }
-    });
-
-    // Make dots clickable and update active state on scroll
-    const indicatorDots = document.querySelectorAll(".indicator-dot");
-    const sections = document.querySelectorAll(".section, .timeline-section"); // Select all relevant sections
-
-    // Use ScrollTrigger to update active dot on scroll
-    sections.forEach((section, index) => {
-      ScrollTrigger.create({
-        trigger: section,
-        start: "top center",
-        end: "bottom center",
-        onEnter: () => {
-          indicatorDots.forEach(dot => dot.classList.remove("active"));
-          if (indicatorDots[index]) {
-            indicatorDots[index].classList.add("active");
-          }
-        },
-        onEnterBack: () => {
-          indicatorDots.forEach(dot => dot.classList.remove("active"));
-          if (indicatorDots[index]) {
-            indicatorDots[index].classList.add("active");
-          }
-        }
-      });
-    });
-
-    // Random Code effect
-    const randomCodeElem = document.getElementById('randomCode');
-    const characters = 'あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをんアイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン'; // Japanese characters
-    const codeLength = 2000; // Number of characters to generate initially
-
-    // Typing effect for "World"
-    const worldText = document.getElementById('worldText');
-    const words = [
-        "World",      // English
-        "世界",       // Japanese
-        "Mundo",      // Spanish
-        "Monde",      // French
-        "Welt",       // German
-        "Mondo",      // Italian
-        "Mundo",      // Portuguese
-        "Dünya",      // Turkish
-        "세계",       // Korean
-        "世界",       // Chinese
-        "Dünya",      // Azerbaijani
-        "Dünya",      // Turkmen
-        "உலகம்"      // Tamil
-    ];
-    let currentWordIndex = 0;
-    let charIndex = 0;
-    let isDeleting = false;
-
-    function typeWord() {
-        const currentWord = words[currentWordIndex];
         
-        if (!isDeleting) {
-            // Typing forward
-            if (charIndex < currentWord.length) {
-                worldText.textContent = currentWord.substring(0, charIndex + 1);
-                charIndex++;
-                setTimeout(typeWord, 200);
-            } else {
-                // Finished typing, wait then start deleting
+        <div class="dot dot-1"></div>
+        <div class="dot dot-2"></div>
+        <div class="dot dot-3"></div>
+        <div class="dot dot-4"></div>
+        <div class="dot dot-5"></div>
+        
+        <div class="circles">
+            <div class="circle circle-1">
+                <div class="circle-text">Copyright 20-26. Selvakumaran. All rights reserved.</div>
+            </div>
+            <div class="circle circle-2">
+                <div class="circle-2-text" id="cursorLocation">X: 0<br>Y: 0</div>
+            </div>
+            <div class="circle circle-3"></div>
+        </div>
+        
+        <div class="scroll-indicator">Scroll to explore</div>
+        
+        <div class="bottom-section">
+            <div class="copyright">
+                Copyright 20-26. Selvakumaran.<br>
+                All rights reserved.
+            </div>
+            <div class="location">
+                Bengaluru, Karnataka<br>
+                India
+            </div>
+        </div>
+    </section>
+
+    <!-- Scroll Spacer -->
+    <div class="scroll-spacer"></div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Track Background -->
+        <div class="track-bg"></div>
+
+        <div class="container">
+            <!-- Hero -->
+            <section class="hero">
+                <h1>Hi,</h1>
+                <h1 class="name-hover"> I'm <span class="char">S</span><span class="char">e</span><span class="char">l</span><span class="char">v</span><span class="char">a</span><span class="char">k</span><span class="char">u</span><span class="char">m</span><span class="char">a</span><span class="char">r</span><span class="char">a</span><span class="char">n</span></h1>
+                <p>QA Automation Engineer</p>
+                
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-value">5+</div>
+                        <div class="stat-label">Years</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">100+</div>
+                        <div class="stat-label">Test Suites</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">99.9%</div>
+                        <div class="stat-label">Reliability</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Experience -->
+            <section id="experience" class="fade-in">
+                <h2>Experience</h2>
+                
+                <div class="card">
+                    <div class="card-meta">2023 - Present</div>
+                    <div class="card-title">Senior QA Automation Engineer</div>
+                    <div class="card-subtitle">CISOGenie Platform</div>
+                    <div class="card-description">
+                        Engineering comprehensive test automation frameworks for enterprise compliance management. Architecting CI/CD pipelines with GitLab and developing modular test suites across 17+ system modules.
+                    </div>
+                    <div class="tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">Playwright</span>
+                        <span class="tag">pytest</span>
+                        <span class="tag">GitLab CI/CD</span>
+                        <span class="tag">AWS</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-meta">2021 - 2023</div>
+                    <div class="card-title">QA Automation Engineer</div>
+                    <div class="card-subtitle">Enterprise Security Systems</div>
+                    <div class="card-description">
+                        Developed end-to-end test automation for compliance workflows including DSAR, ROPA, and policy management. Created Build Verification Tests across multiple modules.
+                    </div>
+                    <div class="tags">
+                        <span class="tag">API Testing</span>
+                        <span class="tag">Web Automation</span>
+                        <span class="tag">Test Frameworks</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-meta">2019 - 2021</div>
+                    <div class="card-title">Software Test Engineer</div>
+                    <div class="card-subtitle">Business Applications Team</div>
+                    <div class="card-description">
+                        Established automated testing practices for business impact analysis, risk management, and vendor compliance systems.
+                    </div>
+                    <div class="tags">
+                        <span class="tag">Manual Testing</span>
+                        <span class="tag">Test Planning</span>
+                        <span class="tag">QA Processes</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Projects -->
+            <section id="projects" class="fade-in">
+                <h2>Projects</h2>
+                
+                <div class="card">
+                    <div class="card-title">CI/CD Pipeline Framework</div>
+                    <div class="card-subtitle">Infrastructure Automation</div>
+                    <div class="card-description">
+                        Engineered GitLab CI/CD pipeline for automated test execution with SSH authentication, Azure VM integration, and comprehensive pytest execution in containerized environments.
+                    </div>
+                    <div class="tags">
+                        <span class="tag">GitLab CI</span>
+                        <span class="tag">Docker</span>
+                        <span class="tag">Azure</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">AWS SES Test Reporter</div>
+                    <div class="card-subtitle">Automation System</div>
+                    <div class="card-description">
+                        Developed automated email reporting system using AWS SES with JSON report parsing and dynamic HTML generation.
+                    </div>
+                    <div class="tags">
+                        <span class="tag">AWS SES</span>
+                        <span class="tag">Python</span>
+                        <span class="tag">Reporting</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Modular Test Suite</div>
+                    <div class="card-subtitle">Framework Design</div>
+                    <div class="card-description">
+                        Architected comprehensive test framework covering 17+ modules including BIA, risk management, vendor compliance, and audit workflows.
+                    </div>
+                    <div class="tags">
+                        <span class="tag">Playwright</span>
+                        <span class="tag">pytest</span>
+                        <span class="tag">Modular Design</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">API Test Coverage Suite</div>
+                    <div class="card-subtitle">API Testing</div>
+                    <div class="card-description">
+                        Comprehensive API testing framework comparing against BVT flows, identifying coverage gaps in vendor management and document operations.
+                    </div>
+                    <div class="tags">
+                        <span class="tag">REST API</span>
+                        <span class="tag">Coverage Analysis</span>
+                        <span class="tag">Integration</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Skills -->
+            <section id="skills" class="fade-in">
+                <h2>Skills</h2>
+                
+                <div class="skills-grid">
+                    <div class="skill-category">
+                        <h3>Automation</h3>
+                        <div class="skill-item">
+                            <div class="skill-name">
+                                <span>Python</span>
+                                <span class="skill-percent">95%</span>
+                            </div>
+                            <div class="skill-bar-bg">
+                                <div class="skill-bar-fill" style="width: 0" data-width="95"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-name">
+                                <span>Playwright</span>
+                                <span class="skill-percent">92%</span>
+                            </div>
+                            <div class="skill-bar-bg">
+                                <div class="skill-bar-fill" style="width: 0" data-width="92"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-name">
+                                <span>pytest</span>
+                                <span class="skill-percent">90%</span>
+                            </div>
+                            <div class="skill-bar-bg">
+                                <div class="skill-bar-fill" style="width: 0" data-width="90"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-name">
+                                <span>Selenium</span>
+                                <span class="skill-percent">85%</span>
+                            </div>
+                            <div class="skill-bar-bg">
+                                <div class="skill-bar-fill" style="width: 0" data-width="85"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="skill-category">
+                        <h3>CI/CD</h3>
+                        <div class="skill-item">
+                            <div class="skill-name">
+                                <span>GitLab CI/CD</span>
+                                <span class="skill-percent">88%</span>
+                            </div>
+                            <div class="skill-bar-bg">
+                                <div class="skill-bar-fill" style="width: 0" data-width="88"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-name">
+                                <span>Docker</span>
+                                <span class="skill-percent">82%</span>
+                            </div>
+                            <div class="skill-bar-bg">
+                                <div class="skill-bar-fill" style="width: 0" data-width="82"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-name">
+                                <span>Git</span>
+                                <span class="skill-percent">90%</span>
+                            </div>
+                            <div class="skill-bar-bg">
+                                <div class="skill-bar-fill" style="width: 0" data-width="90"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-name">
+                                <span>Azure DevOps</span>
+                                <span class="skill-percent">75%</span>
+                            </div>
+                            <div class="skill-bar-bg">
+                                <div class="skill-bar-fill" style="width: 0" data-width="75"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="skill-category">
+                        <h3>Testing</h3>
+                        <div class="skill-item">
+                            <div class="skill-name">
+                                <span>API Testing</span>
+                                <span class="skill-percent">93%</span>
+                            </div>
+                            <div class="skill-bar-bg">
+                                <div class="skill-bar-fill" style="width: 0" data-width="93"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-name">
+                                <span>Test Architecture</span>
+                                <span class="skill-percent">88%</span>
+                            </div>
+                            <div class="skill-bar-bg">
+                                <div class="skill-bar-fill" style="width: 0" data-width="88"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-name">
+                                <span>BDD / Gherkin</span>
+                                <span class="skill-percent">85%</span>
+                            </div>
+                            <div class="skill-bar-bg">
+                                <div class="skill-bar-fill" style="width: 0" data-width="85"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-name">
+                                <span>Performance</span>
+                                <span class="skill-percent">78%</span>
+                            </div>
+                            <div class="skill-bar-bg">
+                                <div class="skill-bar-fill" style="width: 0" data-width="78"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="skill-category">
+                        <h3>Cloud</h3>
+                        <div class="skill-item">
+                            <div class="skill-name">
+                                <span>AWS</span>
+                                <span class="skill-percent">80%</span>
+                            </div>
+                            <div class="skill-bar-bg">
+                                <div class="skill-bar-fill" style="width: 0" data-width="80"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-name">
+                                <span>Azure</span>
+                                <span class="skill-percent">75%</span>
+                            </div>
+                            <div class="skill-bar-bg">
+                                <div class="skill-bar-fill" style="width: 0" data-width="75"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-name">
+                                <span>REST APIs</span>
+                                <span class="skill-percent">90%</span>
+                            </div>
+                            <div class="skill-bar-bg">
+                                <div class="skill-bar-fill" style="width: 0" data-width="90"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-name">
+                                <span>Databases</span>
+                                <span class="skill-percent">82%</span>
+                            </div>
+                            <div class="skill-bar-bg">
+                                <div class="skill-bar-fill" style="width: 0" data-width="82"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Footer -->
+            <section id="contact" class="footer fade-in">
+                <h2>Let's Connect</h2>
+                <div class="contact-links">
+                    <a href="#" class="contact-link">LinkedIn</a>
+                    <a href="#" class="contact-link">GitHub</a>
+                    <a href="#" class="contact-link">Email</a>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        // Loader
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const loader = document.getElementById('loader');
+                loader.classList.add('hidden');
+                document.body.classList.remove('loading');
+                
+                // Animate stats after loader
                 setTimeout(() => {
-                    isDeleting = true;
-                    typeWord();
-                }, 2000);
-            }
-        } else {
-            // Deleting backward
-            if (charIndex > 0) {
-                worldText.textContent = currentWord.substring(0, charIndex - 1);
-                charIndex--;
-                setTimeout(typeWord, 100); // Faster backspace
+                    document.querySelectorAll('.stat-value').forEach((stat, index) => {
+                        setTimeout(() => {
+                            stat.classList.add('animate');
+                        }, index * 100);
+                    });
+                }, 300);
+            }, 1800);
+        });
+        
+        // Track cursor position on opening section
+        const openingSectionElement = document.querySelector('.opening-section');
+        const cursorLocationElement = document.getElementById('cursorLocation');
+        
+        openingSectionElement.addEventListener('mousemove', (e) => {
+            const x = Math.round(e.clientX);
+            const y = Math.round(e.clientY);
+            cursorLocationElement.innerHTML = `X: ${x}<br>Y: ${y}`;
+        });
+        
+        // Parallax scroll effect
+        const mainContent = document.querySelector('.main-content');
+        const openingSection = document.querySelector('.opening-section');
+        const scrollIndicator = document.querySelector('.scroll-indicator');
+        
+        // Make scroll indicator clickable
+        scrollIndicator.addEventListener('click', () => {
+            window.scrollTo({
+                top: window.innerHeight,
+                behavior: 'smooth'
+            });
+        });
+        
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            const windowHeight = window.innerHeight;
+            
+            // Calculate parallax position based on scroll
+            if (scrollY < windowHeight) {
+                // Slide up effect as you scroll
+                const progress = scrollY / windowHeight;
+                mainContent.style.transform = `translateY(${(1 - progress) * 100}vh)`;
+                
+                // Fade out opening section as second page slides up
+                // Start fading at 30% scroll, complete fade at 80%
+                let opacity = 1;
+                if (progress > 0.3) {
+                    opacity = 1 - ((progress - 0.3) / 0.5);
+                    opacity = Math.max(0, Math.min(1, opacity));
+                }
+                openingSection.style.opacity = opacity;
             } else {
-                // Finished deleting, switch words
-                isDeleting = false;
-                currentWordIndex = (currentWordIndex + 1) % words.length;
-                setTimeout(typeWord, 500); // Pause before starting next word
+                mainContent.style.transform = 'translateY(0)';
+                openingSection.style.opacity = '0';
             }
-        }
-    }
+        });
+        
+        // Parallax effect on track background
+        let ticking = false;
+        window.addEventListener('mousemove', (e) => {
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    const trackBg = document.querySelector('.track-bg');
+                    if (trackBg) {
+                        const x = (e.clientX / window.innerWidth - 0.5) * 20;
+                        const y = (e.clientY / window.innerHeight - 0.5) * 20;
+                        trackBg.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) rotate(-15deg)`;
+                    }
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        });
+        
+        // Scroll progress bar
+        window.addEventListener('scroll', () => {
+            const scrollPercent = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+            document.getElementById('scrollProgress').style.width = scrollPercent + '%';
+        });
 
-    // Start the typing effect
-    typeWord();
-
-    function generateRandomCode() {
-      let code = '';
-      for (let i = 0; i < codeLength; i++) {
-        code += characters.charAt(Math.floor(Math.random() * characters.length));
-        if (i > 0 && i % 80 === 0) {
-          code += '\n'; // Add newline for better formatting
-        }
-      }
-      randomCodeElem.textContent = code;
-    }
-
-    function scrollCode() {
-      if (randomCodeElem.scrollHeight > randomCodeElem.clientHeight) {
-        randomCodeElem.scrollTop += 1;
-        // If scrolled to bottom, append more code to keep it scrolling
-        if (randomCodeElem.scrollTop + randomCodeElem.clientHeight >= randomCodeElem.scrollHeight - 1) { // Adjusted condition
-          generateRandomCode(); // Add more code
-          randomCodeElem.scrollTop = randomCodeElem.scrollHeight - randomCodeElem.clientHeight - 20; // Adjust scroll position slightly
-        }
-      }
-    }
-
-    // Generate initial code
-    generateRandomCode();
-
-    // Start scrolling effect
-    setInterval(scrollCode, 15); // Reduced interval from 30 to 15 for faster scrolling
-  </script>
+        // Fade in on scroll
+        const fadeElements = document.querySelectorAll('.fade-in');
+        const skillBars = document.querySelectorAll('.skill-bar-fill');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        fadeElements.forEach(el => observer.observe(el));
+        
+        // Animate skill bars
+        const skillObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const width = entry.target.getAttribute('data-width');
+                    setTimeout(() => {
+                        entry.target.style.width = width + '%';
+                    }, 200);
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        skillBars.forEach(bar => skillObserver.observe(bar));
+        
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Bat click to scroll to top
+        document.getElementById('bat').addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+        
+        // Card click ripple effect
+        document.querySelectorAll('.card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                const ripple = document.createElement('div');
+                ripple.style.position = 'absolute';
+                ripple.style.width = '20px';
+                ripple.style.height = '20px';
+                ripple.style.background = 'rgba(0, 0, 0, 0.1)';
+                ripple.style.borderRadius = '50%';
+                ripple.style.left = e.clientX - this.getBoundingClientRect().left - 10 + 'px';
+                ripple.style.top = e.clientY - this.getBoundingClientRect().top - 10 + 'px';
+                ripple.style.animation = 'ripple 0.6s ease-out';
+                this.appendChild(ripple);
+                
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
+        
+        // Add ripple animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    width: 200px;
+                    height: 200px;
+                    opacity: 0;
+                    margin-left: -100px;
+                    margin-top: -100px;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
 </body>
 </html>
